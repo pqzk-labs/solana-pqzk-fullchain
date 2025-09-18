@@ -1,0 +1,24 @@
+[package]
+name = "stark-pqc-verifier"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+no-entrypoint = []
+idl-build     = ["anchor-lang/idl-build"]
+custom-heap   = []
+default       = ["custom-heap"]
+
+[dependencies]
+anchor-lang  = { version = "0.31.1", features = ["init-if-needed"] }
+solana-program-entrypoint = { version = "3.1.0", default-features = false }
+winterfell   = "0.12"
+winter-utils = "0.12"
+slh-dsa      = { path = "../../third-party/slh-dsa", default-features = false }
+borsh        = "0.10"
+serde        = { version = "1", default-features = false, features = ["derive"] }
+bincode      = { version = "1", default-features = false }

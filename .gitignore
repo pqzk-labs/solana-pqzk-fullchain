@@ -1,0 +1,16 @@
+# lock files are committed for reproducible builds
+
+# Rust / Node build
+**/target/
+**/pkg/
+**/node_modules/
+
+# generated artifacts
+**/proof.bin
+examples/cli-chat/.cache/
+examples/cli-chat/keys/
+examples/cli-chat/upload_meta.json
+
+# Others
+.env
+.DS_Store

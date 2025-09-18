@@ -1,0 +1,131 @@
+// Finalize in two steps: verify SLH-DSA and write ChatMsg, then verify the embedded STARK proof.
+// Also print actual CU usage from the confirmed transactions.
+
+import BN from 'bn.js';
+import { program, provider } from './utils/sdk.ts';
+import fs from 'fs/promises';
+import { PublicKey, ComputeBudgetProgram, SystemProgram } from '@solana/web3.js';
+import { b64ToU8 } from './utils/crypto.ts';
+import { dirname, resolve, join as pathJoin } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname  = dirname(fileURLToPath(import.meta.url));
+const CACHE_DIR  = resolve(__dirname, '../.cache');
+
+// Poll until the transaction is indexed for logs and CU
+const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+async function fetchTx(signature: string) {
+  for (let i = 0; i < 15; i++) {
+    const tx = await provider.connection.getTransaction(signature, {
+      maxSupportedTransactionVersion: 0,
+      commitment: 'confirmed',
+    });
+    if (tx) return tx;
+    await sleep(400);
+  }
+  return null;
+}
+
+// Print consumed CU and return it
+async function printCu(signature: string, label: string, limit?: number): Promise<number> {
+  const tx = await fetchTx(signature);
+  const cu = (tx?.meta?.computeUnitsConsumed as number | undefined) ?? NaN;
+  const cuStr = Number.isFinite(cu) ? (cu as number).toLocaleString() : 'N/A';
+  console.log(`[CU] ${label}: ${cuStr}${limit ? ` (limit=${limit.toLocaleString()})` : ''}`);
+  const logs = tx?.meta?.logMessages ?? [];
+  for (const line of logs) {
+    if (line.includes('consumed')) console.log('  ', line);
+  }
+  console.log('  explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+  return Number.isFinite(cu) ? (cu as number) : 0;
+}
+
+// Inputs prepared by upload.ts
+const meta   = JSON.parse(await fs.readFile('upload_meta.json', 'utf8'));
+const sender = provider.wallet.publicKey;
+const recipient = new PublicKey(meta.recipient ?? sender.toBase58());
+
+console.log('[DBG] programId      =', program.programId.toBase58());
+console.log('[DBG] wallet         =', sender.toBase58());
+console.log('[DBG] recipient      =', recipient.toBase58());
+
+const slotBN = new BN(String(meta.slot), 10);
+const slotBufSeed = Buffer.alloc(8); slotBufSeed.writeBigUInt64LE(BigInt(meta.slot));
+
+// Recreate PDAs used during upload
+const [bufPda]  = PublicKey.findProgramAddressSync([Buffer.from('buf'), sender.toBuffer()], program.programId);
+const sigPda    = new PublicKey(meta.sigPda);
+const [chatPda] = PublicKey.findProgramAddressSync([Buffer.from('msg'), sender.toBuffer(), recipient.toBuffer(), slotBufSeed], program.programId);
+
+// Helpful diagnostics
+const aiBuf  = await provider.connection.getAccountInfo(bufPda);
+const aiSig  = await provider.connection.getAccountInfo(sigPda);
+const aiChat = await provider.connection.getAccountInfo(chatPda);
+console.log('[DBG] bufPda exists? =', !!aiBuf,  aiBuf  ? `len=${aiBuf.data.length}` : '');
+console.log('[DBG] sigPda exists? =', !!aiSig,  aiSig  ? `len=${aiSig.data.length}` : '');
+console.log('[DBG] chatPda exists?=', !!aiChat, aiChat ? `len=${aiChat.data.length}` : '');
+
+// SLH public key for on-chain verification
+const { pkB64 } = JSON.parse(await fs.readFile('keys/slh_pub.json', 'utf8'));
+const pkBytes   = Buffer.from(b64ToU8(pkB64));
+
+// Rough expected size for sanity
+const nonceBuf = Buffer.from(meta.nonce);
+const expected = 8 + 164 + (Number(meta.cipher_len) + Number(meta.kem_len) + Number(meta.proof_len));
+console.log('DBG expected chat_msg space =', expected, '(kyber=768)');
+
+// Step 1 finalizeSig; heap and CU tuned for devnet
+const heapIx1 = ComputeBudgetProgram.requestHeapFrame({ bytes: 128 * 1024 });
+const cuIx1   = ComputeBudgetProgram.setComputeUnitLimit({ units: 550_000 });
+
+const sig1 = await program.methods
+  .finalizeSig(
+    Number(meta.cipher_len),
+    Number(meta.kem_len),
+    Array.from(nonceBuf) as number[],
+    slotBN,
+    Array.from(pkBytes) as number[],
+  )
+  .accountsStrict({
+    buffer: bufPda,
+    sigbuf: sigPda,
+    chatMsg: chatPda,
+    recipient: recipient,
+    payer: sender,
+    systemProgram: SystemProgram.programId,
+  })
+  .preInstructions([heapIx1, cuIx1])
+  .rpc();
+console.log('step-1 done ✅');
+await printCu(sig1, 'finalizeSig', 550_000);
+
+// Confirm ChatMsg was written
+const chatAcc1 = await program.account.chatMsg.fetch(chatPda);
+console.log('[DBG] step1 chat.len =', chatAcc1.payload.length, 'slot=', chatAcc1.slot.toString());
+
+// Step 2 verifyStark; heap must match on-chain limit
+const heapIx2 = ComputeBudgetProgram.requestHeapFrame({ bytes: 256 * 1024 });
+const cuIx2   = ComputeBudgetProgram.setComputeUnitLimit({ units: 1_200_000 });
+
+const sig2 = await program.methods
+  .verifyStark()
+  .accountsStrict({ chatMsg: chatPda })
+  .preInstructions([heapIx2, cuIx2])
+  .rpc();
+console.log('step-2 done ✅');
+await printCu(sig2, 'verifyStark', 1_200_000);
+
+// Cache last chat for receive.ts
+await fs.mkdir(CACHE_DIR, { recursive: true });
+await fs.writeFile(
+  pathJoin(CACHE_DIR, 'last_chat.json'),
+  JSON.stringify({
+    programId : program.programId.toBase58(),
+    chatPda   : chatPda.toBase58(),
+    slot      : Number(meta.slot),
+    recipient : recipient.toBase58(),
+    sigPda    : sigPda.toBase58()
+  }, null, 2)
+);
+console.log('[DBG] wrote .cache/last_chat.json');

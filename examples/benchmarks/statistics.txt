@@ -1,0 +1,13 @@
+Benchmark Results (n = 100 runs)
+
+Finalize Phase (finalize_sig):
+- Mean CU: 501,263
+- Median CU: 499,946
+- Minimum CU: 467,360
+- Maximum CU: 543,534
+
+Verification Phase (verify_stark):
+- Mean CU: 1,104,510
+- Median CU: 1,110,510
+- Minimum CU: 988,312
+- Maximum CU: 1,190,982

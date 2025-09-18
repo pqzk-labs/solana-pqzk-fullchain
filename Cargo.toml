@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+  "programs/stark-pqc-verifier",
+  "crates/stark-prover",
+  "crates/slh-dsa-wasm",
+  "crates/kem-cli",
+]
+
+[profile.release]
+overflow-checks = true
+
+[patch.crates-io]
+winter-fri    = { path = "third-party/winter-fri" }
+winter-crypto = { path = "third-party/winter-crypto" }
+slh-dsa       = { path = "third-party/slh-dsa" }
