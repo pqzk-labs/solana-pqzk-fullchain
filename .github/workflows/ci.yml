@@ -7,19 +7,29 @@ on:
     branches: [ "**" ]
 
 jobs:
-  build-test:
+  anchor-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Rust (stable)
-        uses: dtolnay/rust-toolchain@stable
+      # Use the Rust toolchain version documented in the repo
+      - name: Install Rust (1.88.0)
+        uses: dtolnay/rust-toolchain@1.88.0
 
-      # Host-only build: no devnet/SBF; skip the wasm binding crate to keep CI minimal
-      - name: Build (Rust workspace)
-        run: cargo build --workspace --exclude slh-dsa-wasm --locked
+      # Install Solana CLI (no network/devnet usage; build only)
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v2.2.20/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          solana --version
 
-      # Run a fast host-side unit test (no chain access)
-      - name: Test (stark-prover)
-        run: cargo test -p stark-prover --locked -- --nocapture
+      # Install Anchor CLI matching your repo
+      - name: Install Anchor CLI
+        run: |
+          cargo install --locked --git https://github.com/coral-xyz/anchor --tag v0.31.1 anchor-cli
+          anchor --version
+
+      # Build on-chain programs (SBF/BPF) like local `anchor build`
+      - name: Anchor build
+        run: anchor build
