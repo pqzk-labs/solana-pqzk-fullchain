@@ -1,3 +1,5 @@
+# Note: this workflow exercises steps except those requiring devnet (build + setup only).
+
 name: CI
 
 on:
@@ -7,13 +9,14 @@ on:
     branches: [ "**" ]
 
 jobs:
-  anchor-build:
+  anchor-build-and-setup:
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Required Linux packages (per Solana docs)
+      # Install required system libraries (per Solana/Anchor docs)
       - name: Install system deps
         run: |
           sudo apt-get update
@@ -26,20 +29,35 @@ jobs:
             protobuf-compiler \
             libssl-dev
 
-      # Quick install: Rust, Solana CLI, Anchor (no devnet usage; build only)
-      - name: Install Solana toolchain (Rust + Solana CLI + Anchor)
+      # Install Rust + Solana CLI + Anchor via quick installer
+      - name: Install Solana toolchain
         run: |
           curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
-      # Verify tools are available
-      - name: Show versions
-        run: |
-          rustc --version
-          solana --version
-          anchor --version
+      # Setup Node.js (for npm scripts in examples/cli-chat)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.4.0'
 
-      # Build on-chain programs like local `anchor build`
+      # Install wasm-pack and wasm target (needed by slh-dsa-wasm build)
+      - name: Install wasm-pack and wasm target
+        run: |
+          cargo install wasm-pack --version 0.13.1 --locked
+          rustup target add wasm32-unknown-unknown
+
+      # Build Solana programs (equivalent to local `anchor build`)
       - name: Anchor build
         run: anchor build
+
+      # Install Node.js deps for the CLI demo
+      - name: npm install
+        working-directory: examples/cli-chat
+        run: npm install
+
+      # Run setup (builds wasm + kem-cli via npm script)
+      - name: npm setup
+        working-directory: examples/cli-chat
+        run: npm run setup
