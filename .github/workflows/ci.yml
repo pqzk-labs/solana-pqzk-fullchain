@@ -13,23 +13,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Use the Rust toolchain version documented in the repo
-      - name: Install Rust (1.88.0)
-        uses: dtolnay/rust-toolchain@1.88.0
-
-      # Install Solana CLI (no network/devnet usage; build only)
-      - name: Install Solana CLI
+      # Required Linux packages (per Solana docs)
+      - name: Install system deps
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/v2.2.20/install)"
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libudev-dev \
+            llvm \
+            libclang-dev \
+            protobuf-compiler \
+            libssl-dev
+
+      # Quick install: Rust, Solana CLI, Anchor (no devnet usage; build only)
+      - name: Install Solana toolchain (Rust + Solana CLI + Anchor)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
-          solana --version
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
-      # Install Anchor CLI matching your repo
-      - name: Install Anchor CLI
+      # Verify tools are available
+      - name: Show versions
         run: |
-          cargo install --locked --git https://github.com/coral-xyz/anchor --tag v0.31.1 anchor-cli
+          rustc --version
+          solana --version
           anchor --version
 
-      # Build on-chain programs (SBF/BPF) like local `anchor build`
+      # Build on-chain programs like local `anchor build`
       - name: Anchor build
         run: anchor build
