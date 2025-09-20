@@ -12,7 +12,7 @@
     "@types/bn.js": "^5.2.0",
     "@types/node": "^24.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.9.2"
   },
   "scripts": {
     "build:slh": "wasm-pack build ../../crates/slh-dsa-wasm --target nodejs --out-dir pkg/slh_dsa_wasm",
