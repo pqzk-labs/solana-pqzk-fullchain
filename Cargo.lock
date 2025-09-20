@@ -2818,7 +2818,7 @@ version = "0.1.0"
 dependencies = [
  "anchor-lang",
  "bincode",
- "borsh 0.10.4",
+ "borsh 1.5.7",
  "serde",
  "slh-dsa",
  "solana-program-entrypoint 3.1.0",

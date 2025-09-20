@@ -19,6 +19,6 @@ solana-program-entrypoint = { version = "3.1.0", default-features = false }
 winterfell   = "0.12"
 winter-utils = "0.12"
 slh-dsa      = { path = "../../third-party/slh-dsa", default-features = false }
-borsh        = "0.10"
+borsh        = "1.5"
 serde        = { version = "1", default-features = false, features = ["derive"] }
 bincode      = { version = "1", default-features = false }
