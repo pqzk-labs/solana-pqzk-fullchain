@@ -1,0 +1,18 @@
+[package]
+name = "stark-prover"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "stark_prover"
+path = "src/lib.rs"
+
+[[bin]]
+name = "stark-prover"        # cargo run -p stark-prover -- gen <sha256_hex>
+path = "src/main.rs"
+
+[dependencies]
+winterfell   = "0.12"
+winter-utils = "0.12"
+hex = "0.4"
+anyhow = "1"
