@@ -21,4 +21,4 @@ winter-utils = "0.12"
 slh-dsa      = { path = "../../third-party/slh-dsa", default-features = false }
 borsh        = "0.10"
 serde        = { version = "1", default-features = false, features = ["derive"] }
-bincode      = { version = "1", default-features = false }
+bincode      = { version = "2", default-features = false }
