@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![CI](https://github.com/pqzk-labs/solana-pqzk-fullchain/actions/workflows/ci.yml/badge.svg)](https://github.com/pqzk-labs/solana-pqzk-fullchain/actions/workflows/ci.yml)
 
 > ⚠️ Status: Research-only / Not audited.
 
@@ -29,6 +30,8 @@ This PoC demonstrates a fully on‑chain alternative using a hash‑based STARK,
 - crates/stark-prover — local STARK prover (Winterfell 0.12)  
 - crates/slh-dsa-wasm — SLH-DSA (SPHINCS+, NIST FIPS 205) bindings for Node/TS via wasm-pack  
 - crates/kem-cli — ML-KEM/Kyber768 helper used by the demo  
+- .github/workflows/ci.yml — CI workflow: builds the program (`anchor build`) and client-side artifacts on each push/PR;  
+  skips steps that depend on devnet (deployments/transactions/benchmarks)
 - fixed/ — pinned IDL/types for running without local Anchor build  
 - third-party/* — vendored dependencies (patched for Solana BPF)  
 - Other infra files: Anchor.toml, .cargo/config.toml, etc.
