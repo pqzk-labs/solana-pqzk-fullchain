@@ -12,7 +12,7 @@ name = "stark-prover"        # cargo run -p stark-prover -- gen <sha256_hex>
 path = "src/main.rs"
 
 [dependencies]
-winterfell   = "0.12"
+winterfell   = "0.13"
 winter-utils = "0.12"
 hex = "0.4"
 anyhow = "1"

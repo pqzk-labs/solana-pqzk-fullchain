@@ -2812,7 +2812,7 @@ dependencies = [
  "serde",
  "slh-dsa",
  "solana-program-entrypoint 3.1.0",
- "winter-utils",
+ "winter-utils 0.12.0",
  "winterfell",
 ]
 
@@ -2822,7 +2822,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "hex",
- "winter-utils",
+ "winter-utils 0.12.0",
  "winterfell",
 ]
 
@@ -3333,52 +3333,54 @@ dependencies = [
 
 [[package]]
 name = "winter-air"
-version = "0.12.3"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48a9ee4b14f192be4b0f253d6cc6241844664d6d6684819b6d9b074f4b85af14"
+checksum = "ef01227f23c7c331710f43b877a8333f5f8d539631eea763600f1a74bf018c7c"
 dependencies = [
  "libm",
  "winter-crypto",
  "winter-fri",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
 name = "winter-crypto"
-version = "0.12.0"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1cdb247bc142438798edb04067ab72a22cf815f57abbd7b78a6fa986fc101db8"
 dependencies = [
  "blake3",
- "sha2 0.10.9",
  "sha3",
- "solana-program",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
 name = "winter-fri"
-version = "0.12.2"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd592b943f9d65545683868aaf1b601eb66e52bfd67175347362efff09101d3a"
 dependencies = [
  "winter-crypto",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
 name = "winter-math"
-version = "0.12.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "326dfe4bfa4072b7c909133a88f8807820d3e49e5dfd246f67981771f74a0ed3"
+checksum = "7aecfb48ee6a8b4746392c8ff31e33e62df8528a3b5628c5af27b92b14aef1ea"
 dependencies = [
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
 name = "winter-maybe-async"
-version = "0.12.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eaa132be74e602b707f1dab5a69c38496445e54ee940e7c281c02b15007241bd"
+checksum = "6d31a19dae58475d019850e25b0170e94b16d382fbf6afee9c0e80fdc935e73e"
 dependencies = [
  "quote",
  "syn 2.0.106",
@@ -3386,9 +3388,9 @@ dependencies = [
 
 [[package]]
 name = "winter-prover"
-version = "0.12.3"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91e1ad2747c0f67f3aab25c2753cb7ee321e06722dd1f011344faeee7e2828a4"
+checksum = "84cc631ed56cd39b78ef932c1ec4060cc6a44d114474291216c32f56655b3048"
 dependencies = [
  "tracing",
  "winter-air",
@@ -3396,7 +3398,7 @@ dependencies = [
  "winter-fri",
  "winter-math",
  "winter-maybe-async",
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
@@ -3406,23 +3408,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d47518e6931955dcac73a584cacb04550b82ab2f45c72880cbbbdbe13adb63c"
 
 [[package]]
-name = "winter-verifier"
-version = "0.12.3"
+name = "winter-utils"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a980cd314dddc2f4c9cdbc77127e6390238bb8b7541b6f627541ca35223f8ff"
+checksum = "9951263ef5317740cd0f49e618db00c72fabb70b75756ea26c4d5efe462c04dd"
+
+[[package]]
+name = "winter-verifier"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0425ea81f8f703a1021810216da12003175c7974a584660856224df04b2e2fdb"
 dependencies = [
  "winter-air",
  "winter-crypto",
  "winter-fri",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.13.1",
 ]
 
 [[package]]
 name = "winterfell"
-version = "0.12.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e0568d7d853c01210440d4cdacae6586678931fcb45a1bc26af6b4091aea864"
+checksum = "43f824ddd5aec8ca6a54307f20c115485a8a919ea94dd26d496d856ca6185f4f"
 dependencies = [
  "winter-air",
  "winter-prover",
@@ -3484,3 +3492,11 @@ name = "zeroize"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ced3678a2879b30306d323f4542626697a464a97c0a07c9aebf7ebca65cd4dde"
+
+[[patch.unused]]
+name = "winter-crypto"
+version = "0.12.0"
+
+[[patch.unused]]
+name = "winter-fri"
+version = "0.12.2"
