@@ -2822,7 +2822,7 @@ dependencies = [
  "serde",
  "slh-dsa",
  "solana-program-entrypoint 3.1.0",
- "winter-utils",
+ "winter-utils 0.13.1",
  "winterfell",
 ]
 
@@ -2832,7 +2832,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "hex",
- "winter-utils",
+ "winter-utils 0.13.1",
  "winterfell",
 ]
 
@@ -3351,7 +3351,7 @@ dependencies = [
  "winter-crypto",
  "winter-fri",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
@@ -3363,7 +3363,7 @@ dependencies = [
  "sha3",
  "solana-program",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
@@ -3372,7 +3372,7 @@ version = "0.12.2"
 dependencies = [
  "winter-crypto",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
@@ -3381,7 +3381,7 @@ version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "326dfe4bfa4072b7c909133a88f8807820d3e49e5dfd246f67981771f74a0ed3"
 dependencies = [
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
@@ -3406,7 +3406,7 @@ dependencies = [
  "winter-fri",
  "winter-math",
  "winter-maybe-async",
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
@@ -3414,6 +3414,12 @@ name = "winter-utils"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d47518e6931955dcac73a584cacb04550b82ab2f45c72880cbbbdbe13adb63c"
+
+[[package]]
+name = "winter-utils"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9951263ef5317740cd0f49e618db00c72fabb70b75756ea26c4d5efe462c04dd"
 
 [[package]]
 name = "winter-verifier"
@@ -3425,7 +3431,7 @@ dependencies = [
  "winter-crypto",
  "winter-fri",
  "winter-math",
- "winter-utils",
+ "winter-utils 0.12.0",
 ]
 
 [[package]]
