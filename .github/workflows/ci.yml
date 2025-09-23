@@ -1,0 +1,63 @@
+# Note: this workflow exercises steps except those requiring devnet (build + setup only).
+
+name: CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  anchor-build-and-setup:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # Install required system libraries (per Solana/Anchor docs)
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libudev-dev \
+            llvm \
+            libclang-dev \
+            protobuf-compiler \
+            libssl-dev
+
+      # Install Rust + Solana CLI + Anchor via quick installer
+      - name: Install Solana toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      # Setup Node.js (for npm scripts in examples/cli-chat)
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24.4.0'
+
+      # Install wasm-pack and wasm target (needed by slh-dsa-wasm build)
+      - name: Install wasm-pack and wasm target
+        run: |
+          cargo install wasm-pack --version 0.13.1 --locked
+          rustup target add wasm32-unknown-unknown
+
+      # Build Solana programs (equivalent to local `anchor build`)
+      - name: Anchor build
+        run: anchor build
+
+      # Install Node.js deps for the CLI demo
+      - name: npm install
+        working-directory: examples/cli-chat
+        run: npm install
+
+      # Run setup (builds wasm + kem-cli via npm script)
+      - name: npm setup
+        working-directory: examples/cli-chat
+        run: npm run setup
