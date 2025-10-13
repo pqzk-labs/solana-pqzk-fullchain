@@ -14,7 +14,7 @@ custom-heap   = []
 default       = ["custom-heap"]
 
 [dependencies]
-anchor-lang  = { version = "0.31.1", features = ["init-if-needed"] }
+anchor-lang  = { version = "0.32.1", features = ["init-if-needed"] }
 solana-program-entrypoint = { version = "3.1.0", default-features = false }
 winterfell   = "0.12"
 winter-utils = "0.12"
