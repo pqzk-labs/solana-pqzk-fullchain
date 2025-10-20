@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.9.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
