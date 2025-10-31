@@ -3,8 +3,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![CI](https://github.com/pqzk-labs/solana-pqzk-fullchain/actions/workflows/ci.yml/badge.svg)](https://github.com/pqzk-labs/solana-pqzk-fullchain/actions/workflows/ci.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17186799.svg)](https://doi.org/10.5281/zenodo.17186799)
 
 > ⚠️ Status: Research-only / Not audited.
+
+🔬📄 **Paper:** [IACR ePrint 2025/1741](https://eprint.iacr.org/2025/1741) • [DOI:10.5281/zenodo.17186799](https://doi.org/10.5281/zenodo.17186799)
 
 Fully on‑chain verifier demo on Solana L1 (CPI‑friendly):
 ZK-STARK (Winterfell 0.12) + SLH‑DSA (SPHINCS+, NIST FIPS 205) signature + ML‑KEM/Kyber (NIST FIPS 203) KEM.
