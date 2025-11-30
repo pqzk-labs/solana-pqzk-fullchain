@@ -14,7 +14,7 @@ jobs:
     steps:
       # Checkout repository
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Install required system libraries (per Solana/Anchor docs)
       - name: Install system deps
