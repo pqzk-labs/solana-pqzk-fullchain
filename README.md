@@ -49,10 +49,10 @@ Prereqs (tested with): Rust 1.88.0, Cargo 1.88.0, Solana CLI 2.2.20 (Agave), Nod
 
 0. **Install dependencies**
 
-    Install Rust and Cargo: <https://doc.rust-lang.org/cargo/getting-started/installation.html>
-    Install wasm-pack: <https://crates.io/crates/wasm-pack>
-    Install Solana CLI: <https://solana.com/docs/intro/installation>
-    Install Node.js <https://nodejs.org/en/download>
+    * Install Rust and Cargo: <https://doc.rust-lang.org/cargo/getting-started/installation.html>
+    * Install wasm-pack: <https://crates.io/crates/wasm-pack>
+    * Install Solana CLI: <https://solana.com/docs/intro/installation>
+    * Install Node.js <https://nodejs.org/en/download>
     
     Before running the demo, install the Node.js packages for the CLI example:  
     
