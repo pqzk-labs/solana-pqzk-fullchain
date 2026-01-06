@@ -44,54 +44,91 @@ Default: run without Anchor build/deploy using the pinned IDL/types under fixed/
 Prereqs (tested with): Rust 1.88.0, Cargo 1.88.0, Solana CLI 2.2.20 (Agave), Node.js v24.4.0, npm 11.4.2, wasm‑pack 0.13.1
 > **Note:** Tested on Linux, macOS, and Windows Subsystem for Linux (WSL2).  
 > Native Windows without WSL is not supported by solana-cli and may not work.
+ 
+### Steps
 
 0. **Install dependencies**
 
-Before running the demo, install the Node.js packages for the CLI example:  
-```
-npm --prefix examples/cli-chat install (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm install)
-```
+    * Install Rust and Cargo: <https://doc.rust-lang.org/cargo/getting-started/installation.html>
+    * Install wasm-pack: <https://crates.io/crates/wasm-pack>
+    * Install Solana CLI: <https://solana.com/docs/intro/installation>
+    * Install Node.js <https://nodejs.org/en/download>
+    
+    Before running the demo, install the Node.js packages for the CLI example:  
+    
+    ```
+    npm --prefix examples/cli-chat install 
+    ```
+
 
 1. **Connect to devnet & fund your wallet**
-```
-solana config set --url devnet
-solana-keygen new (if you don't have wallet)
-solana airdrop 2
-```
-Wallet locations used by this repo  
-Anchor uses the wallet in Anchor.toml:  
-[provider] wallet = "~/.config/solana/id.json" (default in this repo)  
-Client SDK (examples/cli-chat/src/utils/sdk.ts) resolves the wallet in this order:  
-ANCHOR_WALLET → SOLANA_KEYPAIR → ~/.config/solana/id.json (default)
+
+    If you don't have wallet:
+    ```
+    solana config set --url devnet
+    solana-keygen new
+    solana airdrop 2
+    ```
+
+    If you already have a wallet: 
+    ```
+    solana config set --url devnet
+    solana airdrop 2
+    ```
+
+    By default, both Anchor and the TypeScript CLI use the same Solana keypair at:
+    - `~/.config/solana/id.json`
+
+    You only need to do something here if you want to use a different keypair:
+    For the CLI demo, set one of (example):
+     - `ANCHOR_WALLET=/path/to/keypair.json`
+     - `SOLANA_KEYPAIR=/path/to/keypair.json`
+
+    For Anchor, edit `Anchor.toml`:
+     - `[provider].wallet = "/path/to/keypair.json"`
 
 2. **Run the pinned devnet demo (no build/deploy needed)**
-```
-npm --prefix examples/cli-chat run setup (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm run setup)
-npm --prefix examples/cli-chat run keys (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm run keys)
-npm --prefix examples/cli-chat run upload (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm run upload)
-npm --prefix examples/cli-chat run finalize (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm run finalize)
-npm --prefix examples/cli-chat run receive (or ~/solana-pqzk-fullchain/examples/cli-chat$ npm run receive)
-```
-Notes:
-- The SDK reads fixed/idl/stark_pqc_verifier.json and fixed/types/stark_pqc_verifier.ts by default.
-- The devnet program id is taken from the IDL’s metadata.address.
-- The commands above still build client-side crates during npm run setup.
 
-**To use your own deployment (Optional):**
+    ```
+    npm --prefix examples/cli-chat run setup 
+    npm --prefix examples/cli-chat run keys 
+    npm --prefix examples/cli-chat run upload 
+    npm --prefix examples/cli-chat run finalize 
+    npm --prefix examples/cli-chat run receive 
+    ```
+
+    **Expected output (success):**  
+    `finalize` prints two successful steps (`step-1 done` and `step-2 done`) and shows consumed CU for each transaction.  
+    `receive` ends with:
+      - `PLAINTEXT = Hello world!`
+      - `receive ✅`
+    
+    Notes:
+    - The SDK reads `fixed/idl/stark_pqc_verifier.json` and `fixed/types/stark_pqc_verifier.ts` by default.
+    - The devnet program id is taken from the IDL’s metadata.address.
+    - The commands above still build client-side crates during npm run setup.
+
+### Use your own deployment (Optional)
+
+**Goal:** run the CLI demo against *your* deployed program instead of the pinned devnet deployment in `fixed/`.
+
 ```
 anchor build
 anchor deploy
 ```
+
 Set your deployed ID in program code:  
-programs/stark-pqc-verifier/src/lib.rs → declare_id!("YOUR_PROGRAM_ID");  
+programs/stark-pqc-verifier/src/lib.rs → `declare_id!("YOUR_PROGRAM_ID");`  
+
 Set it in Anchor config:  
-Anchor.toml → [programs.devnet].stark_pqc_verifier = "YOUR_PROGRAM_ID"
+Anchor.toml → `[programs.devnet].stark_pqc_verifier = "YOUR_PROGRAM_ID"`
 
-Then edit examples/cli-chat/src/utils/sdk.ts to point to target/ instead of fixed/:
+Then edit `examples/cli-chat/src/utils/sdk.ts` to point to `target/` instead of `fixed/`:
 
-import type { StarkPqcVerifier } from '../../../../target/types/stark_pqc_verifier.ts';  
-const idlPath = resolve(__dirname, '../../../../target/idl/stark_pqc_verifier.json');  
-Ensure target/idl/stark_pqc_verifier.json contains your deployed program id in metadata.address.
+    import type { StarkPqcVerifier } from '../../../../target/types/stark_pqc_verifier.ts';  
+    const idlPath = resolve(__dirname, '../../../../target/idl/stark_pqc_verifier.json');  
+
+Ensure `target/idl/stark_pqc_verifier.json` contains your deployed program id in metadata.address.
 
 ## 📝 Design notes
 Public inputs for the AIR are derived on chain from SHA256(cipher) to bind the proof to the ciphertext.
