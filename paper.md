@@ -41,6 +41,12 @@ This package is intended for researchers and engineers who need a reproducible b
 
 A longer methods-and-measurement report describing the same artifacts is available as a preprint on Zenodo and IACR ePrint; the JOSS paper intentionally focuses on the software contribution, interfaces, and reproducibility rather than new scientific findings [@YanoZenodo2025; @YanoEprint2025].
 
+# Software design
+
+The software is organized as an end-to-end reference stack for Solana L1: an on-chain verifier program (Anchor/SBF), an off-chain prover workflow, a CLI demo, and benchmark scripts. Verification is split into two phases—(1) SLH-DSA signature verification and (2) STARK proof verification—to reject unauthorized or malformed payloads before paying the higher STARK verification cost. Large inputs are handled via bounded, chunked uploads with constant work per chunk (including a rolling SHA-256 chain) to fit Solana transaction/account limits and improve predictability under adversarial inputs. To operate within Solana’s SBF constraints, the implementation routes SHA-256 hashing through Solana’s `hashv` syscall and manages stack/heap usage in line with requested heap frames.
+
+Build vs. contribute: the cryptographic primitives come from existing standards and libraries; the contribution is the Solana-specific integration and reproducible workflow (program + client + benchmarks) that shows how to run these components under Solana’s execution and transaction constraints.
+
 # Acknowledgements
 
 This project builds on the Winterfell STARK ecosystem [@winterfell] and references the NIST post-quantum standards for ML-KEM and SLH-DSA [@FIPS203; @FIPS205]. It also relies on Solana’s public documentation for compute budgeting and transaction constraints [@SolanaFees; @SolanaComputeBudget; @SolanaTxSizeLimit]. No specific financial support was received for this work. The author declares no conflicts of interest.
