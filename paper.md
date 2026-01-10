@@ -51,6 +51,10 @@ Build vs. contribute: the cryptographic primitives come from existing standards 
 
 This project provides credible near-term significance as a reproducible baseline for evaluating post-quantum–oriented verification on Solana L1. At the time of writing, we are not aware of many publicly available Solana L1 reference implementations that verify both a STARK proof and an NIST-standard post-quantum signature (SLH-DSA, FIPS 205) fully on-chain in a single end-to-end pipeline. The repository includes a runnable CLI demo and benchmark utilities that record transaction-level compute units for each verification phase, enabling others to reproduce results and compare engineering trade-offs (hashing strategy, memory settings, and I/O chunking). The documented adaptations for the Solana SBF environment are intended to help developers who are considering STARK verification or PQ signatures, and to support future CPI-friendly reuse.
 
+# AI usage disclosure
+
+Generative AI (ChatGPT) was used in a limited way. The core software design and implementation were created by the author. ChatGPT was occasionally used for small code snippets/boilerplate (e.g., helper functions or simple CLI handling); all AI-suggested code was reviewed, edited, and tested by the author. For the paper and documentation, the technical content and structure were written by the author, and ChatGPT was used to improve English wording. The author reviewed and corrected the final manuscript and takes responsibility for the code and paper.
+
 # Acknowledgements
 
 This project builds on the Winterfell STARK ecosystem [@winterfell] and references the NIST post-quantum standards for ML-KEM and SLH-DSA [@FIPS203; @FIPS205]. It also relies on Solana’s public documentation for compute budgeting and transaction constraints [@SolanaFees; @SolanaComputeBudget; @SolanaTxSizeLimit]. No specific financial support was received for this work. The author declares no conflicts of interest.
