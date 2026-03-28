@@ -25,7 +25,7 @@ bibliography: paper.bib
 
 # Statement of need
 
-Public blockchains preserve artifacts indefinitely, which creates a “record now, break later” risk profile for protocols whose security relies on assumptions that may be weakened by future capabilities, including Shor-type quantum attacks on discrete-log based systems [@Shor1999]. In practice, many deployed succinct proof systems use pairing-based SNARKs (e.g., Groth16, PLONK) because of small proofs and fast verification [@Groth16; @PLONK]. In contrast, STARKs are transparent (no trusted setup) and primarily hash-based, making them attractive when long-term post-quantum orientation is a design goal [@STARKePrint2018; @FRI]. The trade-off is that STARK verification is typically hashing-heavy and proof sizes are larger, so engineering feasibility depends strongly on the target execution environment.
+Public blockchains preserve artifacts indefinitely, which creates a “record now, break later” risk profile for protocols whose security relies on assumptions that may be weakened by future capabilities, including Shor-type quantum attacks on discrete-log based systems [@Shor1999]. This concern is relevant not only to transaction authentication, but also to proof systems used to verify on-chain computation. In relation to existing work, practical deployments often favor verifier-efficient proof systems, while this software targets a Solana-specific, post-quantum-oriented end-to-end workflow. A fuller comparison with related approaches and component libraries is given in the following State of the field section.
 
 Solana is a useful platform for studying this feasibility because it exposes explicit transaction compute accounting and strict runtime constraints (compute-unit limits, bounded stack, explicit heap-frame requests, and transaction/instruction size limits) that directly shape what can be verified on L1 [@SolanaFees; @SolanaComputeBudget; @SolanaTxSizeLimit]. However, implementing a full verifier pipeline on Solana L1 is non-trivial: hashing costs dominate, stack pressure can trigger SBF failures, memory allocation must be controlled, and large inputs require DoS- and fee-aware streaming.
 
@@ -41,11 +41,19 @@ This package is intended for researchers and engineers who need a reproducible b
 
 A longer methods-and-measurement report describing the same artifacts is available as a preprint on Zenodo and IACR ePrint; the JOSS paper intentionally focuses on the software contribution, interfaces, and reproducibility rather than new scientific findings [@YanoZenodo2025; @YanoEprint2025].
 
+# State of the field
+
+In current blockchain practice, transaction authentication still commonly relies on classical digital signatures, including ECDSA- and EdDSA-family schemes. In zero-knowledge deployments, succinct pairing-based SNARKs such as Groth16 and PLONK are often favored when proof size, verifier efficiency, and overall deployment simplicity are dominant concerns [@Groth16; @PLONK]. By contrast, STARKs are transparent and primarily hash-based, which makes them attractive from a post-quantum-oriented perspective, but they generally come with heavier proof and verification costs, larger artifacts, and more demanding off-chain workflows [@STARKePrint2018; @FRI].
+
+Standardized post-quantum signatures include both hash-based and lattice-based families, with different trade-offs in assumptions, artifact size, and runtime cost. In this PoC, SLH-DSA is used because its hash-based design aligns naturally with the post-quantum-oriented framing of a hash-based STARK verifier. This choice does not imply that lattice-based signatures are unsuitable; rather, it reflects a conceptually aligned reference design for this software stack.
+
+This repository builds on existing component libraries, including upstream cryptographic software such as Winterfell, rather than replacing them. Its contribution is a Solana-specific reference workflow that combines on-chain verification, a runnable CLI demo, and reproducible benchmarking materials. The contribution is therefore not a new proof or signature algorithm, but the integration and measurement needed to study this workflow on Solana L1.
+
+This “build vs. contribute” choice is intentional. Existing component libraries provide important building blocks, but they do not by themselves provide a reproducible Solana L1 reference stack for this exact end-to-end problem.
+
 # Software design
 
 The software is organized as an end-to-end reference stack for Solana L1: an on-chain verifier program (Anchor/SBF), an off-chain prover workflow, a CLI demo, and benchmark scripts. Verification is split into two phases—(1) SLH-DSA signature verification and (2) STARK proof verification—to reject unauthorized or malformed payloads before paying the higher STARK verification cost. Large inputs are handled via bounded, chunked uploads with constant work per chunk (including a rolling SHA-256 chain) to fit Solana transaction/account limits and improve predictability under adversarial inputs. To operate within Solana’s SBF constraints, the implementation routes SHA-256 hashing through Solana’s `hashv` syscall and manages stack/heap usage in line with requested heap frames.
-
-Build vs. contribute: the cryptographic primitives come from existing standards and libraries; the contribution is the Solana-specific integration and reproducible workflow (program + client + benchmarks) that shows how to run these components under Solana’s execution and transaction constraints.
 
 # Research impact statement
 
