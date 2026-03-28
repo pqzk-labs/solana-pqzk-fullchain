@@ -43,7 +43,7 @@ A longer methods-and-measurement report describing the same artifacts is availab
 
 # State of the field
 
-In current practice, zero-knowledge deployments often favor succinct pairing-based SNARKs, such as Groth16 and PLONK, when proof size and verifier efficiency are dominant concerns [@Groth16; @PLONK]. By contrast, STARKs are transparent and primarily hash-based, which makes them attractive from a post-quantum-oriented perspective, but they generally impose heavier proof and verification costs [@STARKePrint2018; @FRI].
+In current blockchain practice, transaction authentication still commonly relies on classical digital signatures, including ECDSA- and EdDSA-family schemes. In zero-knowledge deployments, succinct pairing-based SNARKs such as Groth16 and PLONK are often favored when proof size and verifier efficiency are dominant concerns [@Groth16; @PLONK]. By contrast, STARKs are transparent and primarily hash-based, which makes them attractive from a post-quantum-oriented perspective, but they generally impose heavier proof and verification costs [@STARKePrint2018; @FRI].
 
 Standardized post-quantum signatures include both hash-based and lattice-based families, with different trade-offs in assumptions, artifact size, and runtime cost. In this PoC, SLH-DSA is used because its hash-based design aligns naturally with the post-quantum-oriented framing of a hash-based STARK verifier. This choice does not imply that lattice-based signatures are unsuitable; rather, it reflects a conceptually aligned reference design for this software stack.
 
