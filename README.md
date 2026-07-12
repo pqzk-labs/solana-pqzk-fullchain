@@ -151,6 +151,7 @@ If you change hasher or security, regenerate the proof and re‑upload.
 
 ## 📊 Benchmark results
 The following figures show the benchmark results presented in the paper.
+
 <table>
   <tr>
     <td align="center"> <img src="img/finalize_sig.png" width="360" alt="finalize_sig"></td>
@@ -160,7 +161,8 @@ The following figures show the benchmark results presented in the paper.
     <td align="center">finalize_sig</td> <td align="center">verify_stark</td>
   </tr>
 </table>
-For the benchmark procedure and numerical results, see examples/benchmarks.
+
+For the benchmark procedure and numerical results, see [examples/benchmarks](examples/benchmarks/).
 
 ## 🛡️ Safety and status
 We implement algorithm families standardized as NIST FIPS 203 (ML‑KEM) and FIPS 205 (SLH‑DSA/SPHINCS+) via open‑source crates.  
