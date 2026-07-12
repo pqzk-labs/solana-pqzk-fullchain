@@ -40,6 +40,16 @@ This PoC demonstrates a fully on‑chain alternative using a hash‑based STARK,
 - third-party/* — vendored dependencies (patched for Solana BPF)  
 - Other infra files: Anchor.toml, .cargo/config.toml, etc.
 
+## 🧩 Usage examples
+
+| Example | What it demonstrates | Typical workflow | Details |
+|---|---|---|---|
+| On-chain verifier | Buffer initialization, chunked uploads, SLH-DSA verification, and STARK verification. | `init_buffer` / `init_signature` → `upload_body` / `upload_signature` → `finalize_sig` → `verify_stark` | [`programs/stark-pqc-verifier`](programs/stark-pqc-verifier/) |
+| CLI chat | Complete encrypt, prove, sign, upload, verify, and decrypt workflow. | `setup` → `keys` → `upload` → `finalize` → `receive` | [`examples/cli-chat`](examples/cli-chat/) |
+| Benchmarks | Repeated execution and CU measurement of verification steps. | Enable instrumented `finalize.ts` → run benchmark script → inspect `results.csv` | [`examples/benchmarks`](examples/benchmarks/) |
+
+The linked README files provide detailed commands, limits, and configuration notes.
+
 ## 🚀 Quick start
 Default: run without Anchor build/deploy using the pinned IDL/types under fixed/.  
 Prereqs (tested with): Rust 1.88.0, Cargo 1.88.0, Solana CLI 2.2.20 (Agave), Node.js v24.4.0, npm 11.4.2, wasm‑pack 0.13.1
