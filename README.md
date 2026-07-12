@@ -142,7 +142,8 @@ Then edit `examples/cli-chat/src/utils/sdk.ts` to point to `target/` instead of 
 Ensure `target/idl/stark_pqc_verifier.json` contains your deployed program id in metadata.address.
 
 ## 📝 Design notes
-Public inputs for the AIR are derived on chain from SHA256(cipher) to bind the proof to the ciphertext.
+Public inputs for the AIR are derived on chain from SHA256(cipher) to bind the proof to the ciphertext.  
+The current affine-counter proof is intended as a PoC and does not constitute a complete authenticity or integrity proof.  
 SLH‑DSA verification signs cipher || kem || nonce || slot_le.  
 Buffers are uploaded in ≤ 900‑byte chunks with running SHA‑256 to ensure integrity.  
 A small custom allocator avoids writable ELF sections; clients provide a heap frame matching the on‑chain limit.
