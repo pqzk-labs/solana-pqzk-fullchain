@@ -69,6 +69,11 @@ pub fn handle_finalize_sig(
     let total = ctx.accounts.buffer.length as usize;
     require!(total <= MAX_CHAT_PAYLOAD, ErrorCode::LenMismatch);
 
+    let end = cipher_len
+        .checked_add(kem_len)
+        .ok_or(ErrorCode::LenMismatch)? as usize;
+    require!(end <= total, ErrorCode::LenMismatch);
+
     let proof_len_est = total
         .saturating_sub(cipher_len as usize)
         .saturating_sub(kem_len as usize);
@@ -94,7 +99,7 @@ pub fn handle_finalize_sig(
     };
 
     let blob = [
-        &body[..cipher_len as usize + kem_len as usize],
+        &body[..end],
         &nonce,
         &slot.to_le_bytes(),
     ]
