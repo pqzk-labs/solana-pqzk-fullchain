@@ -30,6 +30,7 @@ This PoC demonstrates a fully on‑chain alternative using a hash‑based STARK,
 - programs/stark-pqc-verifier — L1 verifier program (CPI-friendly)  
 - examples/cli-chat — end-to-end demo: encrypt, prove, sign, upload, finalize, receive  
 - examples/benchmarks — scripts & logs to measure compute unit (CU) usage  
+- img/ — benchmark figures used in the paper  
 - crates/stark-prover — local STARK prover (Winterfell 0.12)  
 - crates/slh-dsa-wasm — SLH-DSA (SPHINCS+, NIST FIPS 205) bindings for Node/TS via wasm-pack  
 - crates/kem-cli — ML-KEM/Kyber768 helper used by the demo  
@@ -38,6 +39,16 @@ This PoC demonstrates a fully on‑chain alternative using a hash‑based STARK,
 - fixed/ — pinned IDL/types for running without local Anchor build  
 - third-party/* — vendored dependencies (patched for Solana BPF)  
 - Other infra files: Anchor.toml, .cargo/config.toml, etc.
+
+## 🧩 Usage examples
+
+| Example | What it demonstrates | Typical workflow | Details |
+|---|---|---|---|
+| On-chain verifier | Buffer initialization, chunked uploads, SLH-DSA verification, and STARK verification. | `init_buffer` / `init_signature` → `upload_body` / `upload_signature` → `finalize_sig` → `verify_stark` | [`programs/stark-pqc-verifier`](programs/stark-pqc-verifier/) |
+| CLI chat | Complete encrypt, prove, sign, upload, verify, and decrypt workflow. | `setup` → `keys` → `upload` → `finalize` → `receive` | [`examples/cli-chat`](examples/cli-chat/) |
+| Benchmarks | Repeated execution and CU measurement of verification steps. | Enable instrumented `finalize.ts` → run benchmark script → inspect `results.csv` | [`examples/benchmarks`](examples/benchmarks/) |
+
+The linked README files provide detailed commands, limits, and configuration notes.
 
 ## 🚀 Quick start
 Default: run without Anchor build/deploy using the pinned IDL/types under fixed/.  
@@ -148,6 +159,21 @@ A small custom allocator avoids writable ELF sections; clients provide a heap fr
   - For Blake3 experiments, start with N = 64.
 
 If you change hasher or security, regenerate the proof and re‑upload.
+
+## 📊 Benchmark results
+The following figures show the benchmark results presented in the paper.
+
+<table>
+  <tr>
+    <td align="center"> <img src="img/finalize_sig.png" width="360" alt="finalize_sig"></td>
+    <td align="center"> <img src="img/verify_stark.png" width="360" alt="verify_stark"></td>
+  </tr>
+  <tr>
+    <td align="center">finalize_sig</td> <td align="center">verify_stark</td>
+  </tr>
+</table>
+
+For the benchmark procedure and numerical results, see [examples/benchmarks](examples/benchmarks/).
 
 ## 🛡️ Safety and status
 We implement algorithm families standardized as NIST FIPS 203 (ML‑KEM) and FIPS 205 (SLH‑DSA/SPHINCS+) via open‑source crates.  
