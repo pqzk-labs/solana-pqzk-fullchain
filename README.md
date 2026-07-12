@@ -30,6 +30,7 @@ This PoC demonstrates a fully on‑chain alternative using a hash‑based STARK,
 - programs/stark-pqc-verifier — L1 verifier program (CPI-friendly)  
 - examples/cli-chat — end-to-end demo: encrypt, prove, sign, upload, finalize, receive  
 - examples/benchmarks — scripts & logs to measure compute unit (CU) usage  
+- img/ — benchmark figures used in the paper  
 - crates/stark-prover — local STARK prover (Winterfell 0.12)  
 - crates/slh-dsa-wasm — SLH-DSA (SPHINCS+, NIST FIPS 205) bindings for Node/TS via wasm-pack  
 - crates/kem-cli — ML-KEM/Kyber768 helper used by the demo  
