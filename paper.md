@@ -31,11 +31,11 @@ Solana is a useful platform for studying the feasibility of fully on-chain verif
 
 `solana-pqzk-fullchain` addresses this gap by providing a complete, reproducible software stack focused on **engineering practicality** rather than proposing a new proof system:
 
-- **CPI-friendly on-chain verifier surface:** a Solana program that verifies an **SLH-DSA (FIPS 205) signature** and a **Winterfell STARK proof** in separate phases to enable early rejection of malformed or unauthorized payloads [@FIPS205; @winterfell; @pqzkFullchain].
+- **Cross-program invocation (CPI)-friendly on-chain verifier surface:** a Solana program that verifies an **SLH-DSA (FIPS 205) signature** and a **Winterfell STARK proof** in separate phases to enable early rejection of malformed or unauthorized payloads [@FIPS205; @winterfell; @pqzkFullchain].
 - **Binding of proofs to application artifacts:** the verifier derives public inputs from `SHA256(ciphertext)` and verifies a minimal AIR (affine counter) as a baseline mechanism for binding a proof to the uploaded ciphertext [@pqzkFullchain].
 - **DoS- and fee-aware streaming uploads:** payloads are uploaded in bounded chunks with fixed-offset appends and a rolling SHA-256 hash chain, so invalid uploads can be rejected with constant work per chunk [@pqzkFullchain].
-- **Runtime-aware adaptations for Solana SBF:** patched components route SHA-256 hashing through Solana’s `hashv` syscall, suppress inlining in FRI hotspots to respect stack limits, and use a bump allocator synchronized to the requested heap frame for predictable memory behavior [@pqzkFullchain].
-- **End-to-end demo and benchmarking:** the repository includes a demo encryption path using a Kyber768/ML-KEM-style KEM for deriving an AEAD key (HKDF-SHA256) and AES-256-GCM encryption, plus scripts that repeatedly run the pipeline and log per-transaction compute units for the verification phases [@FIPS203; @pqzkFullchain].
+- **Runtime-aware adaptations for Solana SBF:** patched components route SHA-256 hashing through Solana’s `hashv` system call, suppress inlining in Fast Reed–Solomon Interactive Oracle Proofs of Proximity (FRI) hotspots to respect stack limits, and use a bump allocator synchronized to the requested heap frame for predictable memory behavior [@pqzkFullchain].
+- **End-to-end demo and benchmarking:** the repository includes a demo encryption path using a Kyber768/ML-KEM-style key encapsulation mechanism (KEM) to establish shared key material, HKDF-SHA-256 to derive an AEAD key, and AES-256-GCM to encrypt the payload, plus scripts that repeatedly run the pipeline and log per-transaction compute units for the verification phases [@FIPS203; @pqzkFullchain].
 
 This package is intended for researchers and engineers who need a reproducible baseline to (a) evaluate the feasibility and cost of PQ-oriented verification on Solana L1, (b) experiment with engineering levers (hashing path, stack discipline, heap sizing, streaming I/O), and (c) integrate a verifier via CPI into other Solana programs.
 
@@ -53,7 +53,7 @@ This “build vs. contribute” choice is intentional. Existing component librar
 
 # Software design
 
-The software is organized as an end-to-end reference stack for Solana L1: an on-chain verifier program (Anchor/SBF), an off-chain prover workflow, a CLI demo, and benchmark scripts. Verification is split into two phases—(1) SLH-DSA signature verification and (2) STARK proof verification—to reject unauthorized or malformed payloads before paying the higher STARK verification cost. Large inputs are handled via bounded, chunked uploads with constant work per chunk (including a rolling SHA-256 chain) to fit Solana transaction/account limits and improve predictability under adversarial inputs. To operate within Solana’s SBF constraints, the implementation routes SHA-256 hashing through Solana’s `hashv` syscall and manages stack/heap usage in line with requested heap frames.
+The software is organized as an end-to-end reference stack for Solana L1: an on-chain verifier program (Anchor/SBF), an off-chain prover workflow, a CLI demo, and benchmark scripts. Verification is split into two phases—(1) SLH-DSA signature verification and (2) STARK proof verification—to reject unauthorized or malformed payloads before paying the higher STARK verification cost. Large inputs are handled via bounded, chunked uploads with constant work per chunk (including a rolling SHA-256 chain) to fit Solana transaction/account limits and improve predictability under adversarial inputs. To operate within Solana’s SBF constraints, the implementation routes SHA-256 hashing through Solana’s `hashv` system call and manages stack/heap usage in line with requested heap frames.
 
 # Research impact statement
 
