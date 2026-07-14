@@ -39,13 +39,11 @@ Solana is a useful platform for studying the feasibility of fully on-chain verif
 
 This package is intended for researchers and engineers who need a reproducible baseline to (a) evaluate the feasibility and cost of PQ-oriented verification on Solana L1, (b) experiment with engineering levers (hashing path, stack discipline, heap sizing, streaming I/O), and (c) integrate a verifier via CPI into other Solana programs.
 
-A longer methods-and-measurement report describing the same artifacts is available as a preprint on Zenodo and IACR ePrint; the JOSS paper intentionally focuses on the software contribution, interfaces, and reproducibility rather than new scientific findings [@YanoZenodo2025; @YanoEprint2025].
-
 # State of the field
 
 In current blockchain practice, transaction authentication still commonly relies on classical digital signatures, including ECDSA- and EdDSA-family schemes. In zero-knowledge deployments, succinct pairing-based SNARKs such as Groth16 and PLONK are often favored when proof size, verifier efficiency, and overall deployment simplicity are dominant concerns [@Groth16; @PLONK]. By contrast, STARKs are transparent and primarily hash-based, which makes them attractive from a post-quantum-oriented perspective, but they generally come with heavier proof and verification costs, larger artifacts, and more demanding off-chain workflows [@STARKePrint2018; @FRI].
 
-Standardized post-quantum signatures include both hash-based and lattice-based families, with different trade-offs in assumptions, artifact size, and runtime cost. In this PoC, SLH-DSA is used because its hash-based design aligns naturally with the post-quantum-oriented framing of a hash-based STARK verifier. This choice does not imply that lattice-based signatures are unsuitable; rather, it reflects a conceptually aligned reference design for this software stack.
+Standardized post-quantum signatures include both hash-based and lattice-based families, with different trade-offs in assumptions, artifact size, and runtime cost. In `solana-pqzk-fullchain`, SLH-DSA is used because its hash-based design aligns naturally with the post-quantum-oriented framing of a hash-based STARK verifier. This choice does not imply that lattice-based signatures are unsuitable; rather, it reflects a conceptually aligned reference design for this software stack.
 
 This repository builds on existing component libraries, including upstream cryptographic software such as Winterfell, rather than replacing them. Its contribution is a Solana-specific reference workflow that combines on-chain verification, a runnable CLI demo, and reproducible benchmarking materials. The contribution is therefore not a new proof or signature algorithm, but the integration and measurement needed to study this workflow on Solana L1.
 
